@@ -12,11 +12,15 @@ public class Enquiry {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
     private User user;
 
     private Long amount;
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
 }

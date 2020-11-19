@@ -1,10 +1,13 @@
 package com.example.currencyConverter.service;
 
+import com.example.currencyConverter.domain.Enquiry;
 import com.example.currencyConverter.domain.User;
 import com.example.currencyConverter.repos.EnquiryRepo;
 import com.example.currencyConverter.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class CurrencyService {
@@ -15,16 +18,25 @@ public class CurrencyService {
     @Autowired
     private EnquiryRepo enquiryRepo;
 
-    public User User(Long userId){
-        User user = userRepo.findById();
-        if(user != null){
-            return user;
+    public User getUser(Long userId){
+        Optional<User> userFromDb = userRepo.findById(userId);
+        if(userFromDb.isPresent()){
+            return userFromDb.get();
         }
-        user = new User();
+        User user = new User();
         user.setId(userId);
+        user.getInqueryId()
         userRepo.save(user);
         return user;
 
+    }
+
+    public Enquiry getEnquiry(User user, Long amount){
+        Enquiry enquiry = new Enquiry();
+        enquiry.setUser(user);
+        enquiry.setAmount(amount);
+
+        return enquiryRepo.save(new Enquiry());
     }
 
 
