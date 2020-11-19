@@ -12,15 +12,10 @@ public class Enquiry {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    private User user;
+    private Long value;
 
-    private Long amount;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
+    public void setValue(Long value) {
+        this.value = value;
     }
 }

@@ -8,20 +8,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "users")
+@Table(name = "usr")
 @Data
 public class User {
 
     @Id
     private Long id;
 
-    private Long inqueryId;
+    private Long enquiry_id;
+
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getInqueryId() {
-        return inqueryId;
-    }
 }

@@ -25,7 +25,6 @@ public class CurrencyService {
         }
         User user = new User();
         user.setId(userId);
-        user.getInqueryId()
         userRepo.save(user);
         return user;
 
@@ -33,8 +32,8 @@ public class CurrencyService {
 
     public Enquiry getEnquiry(User user, Long amount){
         Enquiry enquiry = new Enquiry();
-        enquiry.setUser(user);
-        enquiry.setAmount(amount);
+//        enquiry.setUser(user);
+        enquiry.setValue(amount);
 
         return enquiryRepo.save(new Enquiry());
     }
