@@ -1,7 +1,6 @@
 package com.example.currencyConverter.controller;
 
 import com.example.currencyConverter.domain.Enquiry;
-import com.example.currencyConverter.domain.User;
 import com.example.currencyConverter.model.ConverterModel;
 import com.example.currencyConverter.model.ResponseModel;
 import com.example.currencyConverter.service.CurrencyService;
@@ -10,10 +9,8 @@ import com.example.currencyConverter.util.Currency;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 
 
@@ -27,39 +24,20 @@ public class ExchangeController {
     @Autowired
     private ExchangeApiService exchangeApiService;
 
-//        @GetMapping
-//        public Enquiry exchange(Model model,
-//                            @RequestParam Long userId,
-//                            @RequestParam Long value,
-//                            @RequestParam String sourceCurrency,
-//                            @RequestParam String targetCurrency) {
-
-//        User user = currencyService.getUser(userId);
-//        Enquiry enquiry = currencyService.createEnquiry(sourceCurrency, targetCurrency, value, userId);
-
-
-
-//        return enquiry;
-//    }
-
-    @RequestMapping(value = "/convert", method = RequestMethod.POST)
-    public ResponseEntity<ResponseModel> doConvert(@ModelAttribute ConverterModel converterModel,
-                                                   Model model,
-                                                   HttpServletRequest request) {
-
+    @PostMapping
+    public ResponseEntity<ResponseModel> doConvert(@ModelAttribute ConverterModel converterModel) {
         Currency sourceCurrency = Currency.USD;
-        Currency targetCurrency = converterModel.getTgtCurrency();
+        Currency targetCurrency = converterModel.getTargetCurrency();
         BigDecimal amountOfMoney = converterModel.getUSD();
         Long userId = converterModel.getUserId();
 
-        User user = currencyService.getUser(userId);
-        Enquiry enquiry = currencyService.createEnquiry(sourceCurrency.name(), targetCurrency.toString(), amountOfMoney, userId);
+        currencyService.saveUserIfNotExist(userId);
+        Enquiry enquiry = currencyService.saveEnquiry(sourceCurrency.name(), targetCurrency.toString(), amountOfMoney, userId);
 
-        HttpStatus status = HttpStatus.OK;
-        model.addAttribute("converterModel", converterModel);
         ResponseModel responseModel = exchangeApiService.getConvertedValue(sourceCurrency, targetCurrency, amountOfMoney);
+        responseModel.setRequestId(enquiry.getId());
 
-        return new ResponseEntity<ResponseModel>(responseModel, status);
+        return new ResponseEntity<>(responseModel, HttpStatus.OK);
     }
 
 }

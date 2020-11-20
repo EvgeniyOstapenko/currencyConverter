@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class ResponseModel {
 
     private BigDecimal convertedValue;
+    private Long requestId;
     private Error error;
 
     public BigDecimal getConvertedValue() {
@@ -21,5 +22,13 @@ public class ResponseModel {
 
     public void setError(Error error) {
         this.error = error;
+    }
+
+    public Long getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(Long requestId) {
+        this.requestId = requestId;
     }
 }

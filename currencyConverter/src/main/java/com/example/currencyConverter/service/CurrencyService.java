@@ -21,19 +21,16 @@ public class CurrencyService {
     @Autowired
     private EnquiryRepo enquiryRepo;
 
-    public User getUser(Long userId) {
+    public void saveUserIfNotExist(Long userId) {
         Optional<User> userFromDb = userRepo.findById(userId);
-        if (userFromDb.isPresent()) {
-            return userFromDb.get();
+        if (userFromDb.isEmpty()) {
+            User user = new User();
+            user.setId(userId);
+            userRepo.save(user);
         }
-        User user = new User();
-        user.setId(userId);
-        userRepo.save(user);
-        return user;
-
     }
 
-    public Enquiry createEnquiry(String sourceCurrency, String targetCurrency, BigDecimal amountOfMoney, Long userId) {
+    public Enquiry saveEnquiry(String sourceCurrency, String targetCurrency, BigDecimal amountOfMoney, Long userId) {
         Enquiry enquiry = new Enquiry();
         enquiry.setMoney(amountOfMoney);
         enquiry.setUserId(userId);

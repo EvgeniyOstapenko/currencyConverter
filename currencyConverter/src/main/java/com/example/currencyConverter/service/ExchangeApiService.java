@@ -18,6 +18,9 @@ import java.math.BigDecimal;
 @Service
 public class ExchangeApiService implements ExchangeApiConverter {
 
+    public static final String API_SECRET_KEY = "99a8d9eaa093228e6ef8f601850f322a";
+    public static final String APILAYER_BASE_URL = "http://apilayer.net/api/live";
+
     @Autowired
     private Environment environment;
 
@@ -29,31 +32,27 @@ public class ExchangeApiService implements ExchangeApiConverter {
     }
 
     @Override
-    public ResponseModel getConvertedValue(Currency source, Currency target, BigDecimal amount) {
-
-        ResponseModel responseModel = new ResponseModel();
-
-        String rateKey = source.getCode() + target.getCode();
-
-
-        MultiValueMap<String, String> uriVariables = new LinkedMultiValueMap<String, String>();
-        uriVariables.add("access_key", "ee662daeace6619e2bcf8797fe0f8460");
-        uriVariables.add("currencies", target.getCode());
-        uriVariables.add("source", source.getCode());
-        uriVariables.add("format", "1");
-
-
-        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl("http://apilayer.net/api/live").queryParams(uriVariables).build();
+    public ResponseModel getConvertedValue(Currency sourceCurrency, Currency targetCurrency, BigDecimal amountOfMoney) {
 
         RestTemplate restTemplate = new RestTemplate();
-        ConversionRates rates = restTemplate.getForObject(uriComponents.toUri(), ConversionRates.class);
+        ResponseModel responseModel = new ResponseModel();
 
-        if (rates.getSuccess()) {
-            String cRate = rates.getQuotes().get(rateKey);
-            BigDecimal bdr = new BigDecimal(cRate);
-            responseModel.setConvertedValue(bdr.multiply(amount));
+        MultiValueMap<String, String> uriVariables = new LinkedMultiValueMap<>();
+        uriVariables.add("access_key", API_SECRET_KEY);
+        uriVariables.add("currencies", targetCurrency.getCode());
+        uriVariables.add("source", sourceCurrency.getCode());
+        uriVariables.add("format", "1");
+
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(APILAYER_BASE_URL).queryParams(uriVariables).build();
+        ConversionRates conversionRates = restTemplate.getForObject(uriComponents.toUri(), ConversionRates.class);
+
+        if (conversionRates.getSuccess()) {
+            String sourceTargetCurrency = sourceCurrency.getCode() + targetCurrency.getCode();
+            String conversionRate = conversionRates.getQuotes().get(sourceTargetCurrency);
+            BigDecimal bdConversionRate = new BigDecimal(conversionRate);
+            responseModel.setConvertedValue(bdConversionRate.multiply(amountOfMoney));
         } else {
-            responseModel.setError(rates.getError());
+            responseModel.setError(conversionRates.getError());
             responseModel.setConvertedValue(BigDecimal.ZERO);
         }
 

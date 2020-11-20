@@ -8,17 +8,17 @@ public class ConverterModel {
 
     private BigDecimal srcAmount;
 
-    private Currency tgtCurrency;
+    private Currency targetCurrency;
 
     private Long userId;
 
 
-    public Currency getTgtCurrency() {
-        return tgtCurrency;
+    public Currency getTargetCurrency() {
+        return targetCurrency;
     }
 
-    public void setTgtCurrency(Currency tgtCurrency) {
-        this.tgtCurrency = tgtCurrency;
+    public void setTargetCurrency(Currency targetCurrency) {
+        this.targetCurrency = targetCurrency;
     }
 
     public Long getUserId() {

@@ -53,4 +53,8 @@ public class Enquiry {
     public void setTargetCurrency(String targetCurrency) {
         this.targetCurrency = targetCurrency;
     }
+
+    public Long getId() {
+        return id;
+    }
 }
