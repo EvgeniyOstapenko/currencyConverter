@@ -7,7 +7,9 @@ import com.example.currencyConverter.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CurrencyService {
@@ -18,9 +20,9 @@ public class CurrencyService {
     @Autowired
     private EnquiryRepo enquiryRepo;
 
-    public User getUser(Long userId){
+    public User getUser(Long userId) {
         Optional<User> userFromDb = userRepo.findById(userId);
-        if(userFromDb.isPresent()){
+        if (userFromDb.isPresent()) {
             return userFromDb.get();
         }
         User user = new User();
@@ -30,12 +32,36 @@ public class CurrencyService {
 
     }
 
-    public Enquiry getEnquiry(User user, Long amount){
+    public Enquiry createEnquiry(Long value, Long userId, String sourceCurrency, String targetCurrency) {
         Enquiry enquiry = new Enquiry();
-//        enquiry.setUser(user);
-        enquiry.setValue(amount);
+        enquiry.setValue(value);
+        enquiry.setUserId(userId);
+        enquiry.setSourceCurrency(sourceCurrency);
+        enquiry.setTargetCurrency(targetCurrency);
 
-        return enquiryRepo.save(new Enquiry());
+        return enquiryRepo.save(enquiry);
+    }
+
+    public List<User> getRequestStats(String param) {
+
+        if (param.equals("BIG")) {
+            return getUserListWithSpecialAmountOfMoney(10_000L);
+
+        }
+        if (param.equals("HUGE")) {
+            return getUserListWithSpecialAmountOfMoney(100_000L);
+        }
+
+        return null;
+    }
+
+    private List<User> getUserListWithSpecialAmountOfMoney(Long amount) {
+        List<Enquiry> users = enquiryRepo.findAll();
+        return users.stream()
+                .filter(enquiry -> enquiry.getValue() >= amount)
+                .map(Enquiry::getUserId)
+                .map(id -> userRepo.findById(id).get())
+                .collect(Collectors.toList());
     }
 
 

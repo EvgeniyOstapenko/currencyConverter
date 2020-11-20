@@ -15,9 +15,6 @@ public class User {
     @Id
     private Long id;
 
-    private Long enquiry_id;
-
-
     public void setId(Long id) {
         this.id = id;
     }
