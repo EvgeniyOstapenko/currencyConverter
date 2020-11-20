@@ -3,7 +3,7 @@ CREATE TABLE usr (
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE enquiry (
+CREATE TABLE request (
 	id INT NOT NULL,
 	money DECIMAL NOT NULL,
 	user_id INT NOT NULL,

@@ -1,6 +1,7 @@
 package com.example.currencyConverter.model;
 
 import com.example.currencyConverter.util.Currency;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 
@@ -11,6 +12,9 @@ public class ConverterModel {
     private Currency targetCurrency;
 
     private Long userId;
+
+    @ApiModelProperty(hidden = true)
+    private Long requestId;
 
 
     public Currency getTargetCurrency() {
@@ -36,5 +40,13 @@ public class ConverterModel {
 
     public void setUSD(BigDecimal srcAmount) {
         this.srcAmount = srcAmount;
+    }
+
+    public Long getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(Long enquiry) {
+        this.requestId = enquiry;
     }
 }

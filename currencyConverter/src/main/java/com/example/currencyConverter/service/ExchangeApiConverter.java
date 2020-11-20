@@ -8,6 +8,6 @@ import java.math.BigDecimal;
 
 public interface ExchangeApiConverter {
 
-     ResponseModel getConvertedValue(Currency source, Currency target, BigDecimal amount);
+     ResponseModel getConvertedValue(Currency source, Currency target, BigDecimal amount, Long requestId);
      ConverterModel getConverterModel();
 }

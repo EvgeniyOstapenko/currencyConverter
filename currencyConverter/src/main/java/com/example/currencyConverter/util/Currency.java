@@ -1,7 +1,8 @@
 package com.example.currencyConverter.util;
 
-public enum Currency {
+import io.swagger.annotations.ApiParam;
 
+public enum Currency {
     AED("AED","United Arab Emirates Dirham"),
     AFN("AFN","Afghan Afghani"),
     ALL("ALL","Albanian Lek"),

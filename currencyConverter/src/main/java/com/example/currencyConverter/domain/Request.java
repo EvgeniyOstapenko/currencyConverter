@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Data
-public class Enquiry {
+public class Request {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

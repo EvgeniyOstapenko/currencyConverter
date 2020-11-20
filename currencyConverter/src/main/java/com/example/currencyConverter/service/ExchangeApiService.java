@@ -27,12 +27,21 @@ public class ExchangeApiService implements ExchangeApiConverter {
 
     @Override
     public ConverterModel getConverterModel() {
-        ConverterModel converterModel = new ConverterModel();
-        return converterModel;
+        return new ConverterModel();
+    }
+
+    public ResponseModel getConvertedValue(ConverterModel converterModel){
+        Currency sourceCurrency = Currency.USD;
+        Currency targetCurrency = converterModel.getTargetCurrency();
+        BigDecimal amountOfMoney = converterModel.getUSD();
+        Long requestId = converterModel.getRequestId();
+
+        return getConvertedValue(sourceCurrency, targetCurrency, amountOfMoney, requestId);
     }
 
     @Override
-    public ResponseModel getConvertedValue(Currency sourceCurrency, Currency targetCurrency, BigDecimal amountOfMoney) {
+    public ResponseModel getConvertedValue(Currency sourceCurrency, Currency targetCurrency,
+                                           BigDecimal amountOfMoney, Long requestId) {
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseModel responseModel = new ResponseModel();
@@ -56,6 +65,7 @@ public class ExchangeApiService implements ExchangeApiConverter {
             responseModel.setConvertedValue(BigDecimal.ZERO);
         }
 
+        responseModel.setRequestId(requestId);
         return responseModel;
     }
 
