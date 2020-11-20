@@ -27,33 +27,33 @@ public class ExchangeController {
     @Autowired
     private ExchangeApiService exchangeApiService;
 
-        @GetMapping
-        public Enquiry exchange(Model model,
-                            @RequestParam Long userId,
-                            @RequestParam Long value,
-                            @RequestParam String sourceCurrency,
-                            @RequestParam String targetCurrency) {
+//        @GetMapping
+//        public Enquiry exchange(Model model,
+//                            @RequestParam Long userId,
+//                            @RequestParam Long value,
+//                            @RequestParam String sourceCurrency,
+//                            @RequestParam String targetCurrency) {
 
-        User user = currencyService.getUser(userId);
-        Enquiry enquiry = currencyService.createEnquiry(value, userId, sourceCurrency, targetCurrency);
+//        User user = currencyService.getUser(userId);
+//        Enquiry enquiry = currencyService.createEnquiry(sourceCurrency, targetCurrency, value, userId);
 
 
 
-        return enquiry;
-    }
+//        return enquiry;
+//    }
 
     @RequestMapping(value = "/convert", method = RequestMethod.POST)
     public ResponseEntity<ResponseModel> doConvert(@ModelAttribute ConverterModel converterModel,
                                                    Model model,
                                                    HttpServletRequest request) {
 
-        Currency sourceCurrency = converterModel.getSrcCurrency();
+        Currency sourceCurrency = Currency.USD;
         Currency targetCurrency = converterModel.getTgtCurrency();
-        BigDecimal amountOfMoney = converterModel.getSrcAmount();
+        BigDecimal amountOfMoney = converterModel.getUSD();
         Long userId = converterModel.getUserId();
 
         User user = currencyService.getUser(userId);
-        Enquiry enquiry = currencyService.createEnquiry(amountOfMoney, userId, sourceCurrency, targetCurrency);
+        Enquiry enquiry = currencyService.createEnquiry(sourceCurrency.name(), targetCurrency.toString(), amountOfMoney, userId);
 
         HttpStatus status = HttpStatus.OK;
         model.addAttribute("converterModel", converterModel);

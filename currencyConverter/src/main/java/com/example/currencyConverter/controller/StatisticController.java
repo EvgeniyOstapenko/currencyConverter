@@ -18,9 +18,9 @@ public class StatisticController {
     @Autowired
     private CurrencyService currencyService;
 
-    @GetMapping()
-    public List<User> getBigRequestStats(@RequestParam String param) {
-        return currencyService.getRequestStats(param);
-    }
+//    @GetMapping()
+//    public List<User> getBigRequestStats(@RequestParam String param) {
+//        return currencyService.getRequestStats(param);
+//    }
 
 }

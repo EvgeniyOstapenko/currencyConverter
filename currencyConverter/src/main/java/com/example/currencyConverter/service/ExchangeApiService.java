@@ -16,15 +16,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.math.BigDecimal;
 
 @Service
-public class ExchangeApiService implements ExchangeApiConverter{
+public class ExchangeApiService implements ExchangeApiConverter {
+
     @Autowired
-    private Environment env;
+    private Environment environment;
 
 
     @Override
     public ConverterModel getConverterModel() {
-        ConverterModel cm = new ConverterModel();
-        return cm;
+        ConverterModel converterModel = new ConverterModel();
+        return converterModel;
     }
 
     @Override
@@ -32,22 +33,22 @@ public class ExchangeApiService implements ExchangeApiConverter{
 
         ResponseModel responseModel = new ResponseModel();
 
-        String rateKey = source.getCode()+target.getCode();
+        String rateKey = source.getCode() + target.getCode();
 
 
         MultiValueMap<String, String> uriVariables = new LinkedMultiValueMap<String, String>();
-        uriVariables.add("access_key", env.getProperty("99a8d9eaa093228e6ef8f601850f322a"));
+        uriVariables.add("access_key", "ee662daeace6619e2bcf8797fe0f8460");
         uriVariables.add("currencies", target.getCode());
         uriVariables.add("source", source.getCode());
         uriVariables.add("format", "1");
 
-        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(env.getProperty("http://apilayer.net/api/live"))
-                .queryParams(uriVariables).build();
+
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl("http://apilayer.net/api/live").queryParams(uriVariables).build();
 
         RestTemplate restTemplate = new RestTemplate();
         ConversionRates rates = restTemplate.getForObject(uriComponents.toUri(), ConversionRates.class);
 
-        if(rates.getSuccess()) {
+        if (rates.getSuccess()) {
             String cRate = rates.getQuotes().get(rateKey);
             BigDecimal bdr = new BigDecimal(cRate);
             responseModel.setConvertedValue(bdr.multiply(amount));

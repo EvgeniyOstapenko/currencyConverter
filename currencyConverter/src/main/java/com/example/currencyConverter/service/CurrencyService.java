@@ -7,6 +7,7 @@ import com.example.currencyConverter.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,9 +33,9 @@ public class CurrencyService {
 
     }
 
-    public Enquiry createEnquiry(Long value, Long userId, String sourceCurrency, String targetCurrency) {
+    public Enquiry createEnquiry(String sourceCurrency, String targetCurrency, BigDecimal amountOfMoney, Long userId) {
         Enquiry enquiry = new Enquiry();
-        enquiry.setValue(value);
+        enquiry.setMoney(amountOfMoney);
         enquiry.setUserId(userId);
         enquiry.setSourceCurrency(sourceCurrency);
         enquiry.setTargetCurrency(targetCurrency);
@@ -42,27 +43,27 @@ public class CurrencyService {
         return enquiryRepo.save(enquiry);
     }
 
-    public List<User> getRequestStats(String param) {
-
-        if (param.equals("BIG")) {
-            return getUserListWithSpecialAmountOfMoney(10_000L);
-
-        }
-        if (param.equals("HUGE")) {
-            return getUserListWithSpecialAmountOfMoney(100_000L);
-        }
-
-        return null;
-    }
-
-    private List<User> getUserListWithSpecialAmountOfMoney(Long amount) {
-        List<Enquiry> users = enquiryRepo.findAll();
-        return users.stream()
-                .filter(enquiry -> enquiry.getValue() >= amount)
-                .map(Enquiry::getUserId)
-                .map(id -> userRepo.findById(id).get())
-                .collect(Collectors.toList());
-    }
+//    public List<User> getRequestStats(String param) {
+//
+//        if (param.equals("BIG")) {
+//            return getUserListWithSpecialAmountOfMoney(10_000L);
+//
+//        }
+//        if (param.equals("HUGE")) {
+//            return getUserListWithSpecialAmountOfMoney(100_000L);
+//        }
+//
+//        return null;
+//    }
+//
+//    private List<User> getUserListWithSpecialAmountOfMoney(BigDecimal amount) {
+//        List<Enquiry> users = enquiryRepo.findAll();
+//        return users.stream()
+//                .filter(enquiry -> enquiry.getMoney() >= amount)
+//                .map(Enquiry::getUserId)
+//                .map(id -> userRepo.findById(id).get())
+//                .collect(Collectors.toList());
+//    }
 
 
 }

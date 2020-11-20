@@ -3,6 +3,7 @@ package com.example.currencyConverter.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -12,7 +13,7 @@ public class Enquiry {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    private Long value;
+    private BigDecimal money;
 
     private Long userId;
 
@@ -20,12 +21,13 @@ public class Enquiry {
 
     private String targetCurrency;
 
-    public void setValue(Long value) {
-        this.value = value;
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
     }
 
-    public Long getValue() {
-        return value;
+    public BigDecimal getMoney() {
+        return money;
     }
 
     public Long getUserId() {
