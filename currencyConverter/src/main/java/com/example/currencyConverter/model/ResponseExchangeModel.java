@@ -2,7 +2,7 @@ package com.example.currencyConverter.model;
 
 import java.math.BigDecimal;
 
-public class ResponseModel {
+public class ResponseExchangeModel {
 
     private BigDecimal convertedValue;
     private Long requestId;

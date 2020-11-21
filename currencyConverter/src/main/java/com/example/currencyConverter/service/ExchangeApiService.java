@@ -2,7 +2,7 @@ package com.example.currencyConverter.service;
 
 import com.example.currencyConverter.model.ConversionRates;
 import com.example.currencyConverter.model.ConverterModel;
-import com.example.currencyConverter.model.ResponseModel;
+import com.example.currencyConverter.model.ResponseExchangeModel;
 import com.example.currencyConverter.util.Currency;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -30,7 +30,7 @@ public class ExchangeApiService implements ExchangeApiConverter {
         return new ConverterModel();
     }
 
-    public ResponseModel getConvertedValue(ConverterModel converterModel){
+    public ResponseExchangeModel getConvertedValue(ConverterModel converterModel){
         Currency sourceCurrency = Currency.USD;
         Currency targetCurrency = converterModel.getTargetCurrency();
         BigDecimal amountOfMoney = converterModel.getUSD();
@@ -40,11 +40,11 @@ public class ExchangeApiService implements ExchangeApiConverter {
     }
 
     @Override
-    public ResponseModel getConvertedValue(Currency sourceCurrency, Currency targetCurrency,
-                                           BigDecimal amountOfMoney, Long requestId) {
+    public ResponseExchangeModel getConvertedValue(Currency sourceCurrency, Currency targetCurrency,
+                                                   BigDecimal amountOfMoney, Long requestId) {
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseModel responseModel = new ResponseModel();
+        ResponseExchangeModel responseExchangeModel = new ResponseExchangeModel();
 
         MultiValueMap<String, String> uriVariables = new LinkedMultiValueMap<>();
         uriVariables.add("access_key", API_SECRET_KEY);
@@ -59,14 +59,14 @@ public class ExchangeApiService implements ExchangeApiConverter {
             String sourceTargetCurrency = sourceCurrency.getCode() + targetCurrency.getCode();
             String conversionRate = conversionRates.getQuotes().get(sourceTargetCurrency);
             BigDecimal bdConversionRate = new BigDecimal(conversionRate);
-            responseModel.setConvertedValue(bdConversionRate.multiply(amountOfMoney));
+            responseExchangeModel.setConvertedValue(bdConversionRate.multiply(amountOfMoney));
         } else {
-            responseModel.setError(conversionRates.getError());
-            responseModel.setConvertedValue(BigDecimal.ZERO);
+            responseExchangeModel.setError(conversionRates.getError());
+            responseExchangeModel.setConvertedValue(BigDecimal.ZERO);
         }
 
-        responseModel.setRequestId(requestId);
-        return responseModel;
+        responseExchangeModel.setRequestId(requestId);
+        return responseExchangeModel;
     }
 
 }

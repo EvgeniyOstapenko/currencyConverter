@@ -3,7 +3,10 @@ package com.example.currencyConverter.service;
 import com.example.currencyConverter.domain.Request;
 import com.example.currencyConverter.domain.User;
 import com.example.currencyConverter.model.ConverterModel;
-import com.example.currencyConverter.repos.EnquiryRepo;
+import com.example.currencyConverter.model.ResponseStatisticCurrencyModel;
+import com.example.currencyConverter.model.ResponseStatisticModel;
+import com.example.currencyConverter.model.ResponseStatisticUserModel;
+import com.example.currencyConverter.repos.RequestRepo;
 import com.example.currencyConverter.repos.UserRepo;
 import com.example.currencyConverter.util.Currency;
 import com.example.currencyConverter.util.Parameter;
@@ -25,7 +28,7 @@ public class CurrencyService {
     private UserRepo userRepo;
 
     @Autowired
-    private EnquiryRepo enquiryRepo;
+    private RequestRepo requestRepo;
 
     public void saveUserIfNotExist(Long userId) {
         Optional<User> userFromDb = userRepo.findById(userId);
@@ -56,41 +59,43 @@ public class CurrencyService {
         request.setSourceCurrency(sourceCurrency);
         request.setTargetCurrency(targetCurrency);
 
-        return enquiryRepo.save(request);
+        return requestRepo.save(request);
     }
 
-    public List getRequestStats(Parameter param) {
+    public List<? extends ResponseStatisticModel> getRequestStats(Parameter param) {
 
         if (param.equals(BIG)) {
-            BigDecimal bigMoney = BigDecimal.valueOf(10_000);
-            return getUserListWithSpecialAmountOfMoney(bigMoney);
+            return getUserListWithSpecialAmountOfMoney(10_000);
 
         }
         if (param.equals(HUGE)) {
-            BigDecimal hugeMoney = BigDecimal.valueOf(100_000);
-            return getUserListWithSpecialAmountOfMoney(hugeMoney);
+            return getUserListWithSpecialAmountOfMoney(100_000);
         }
 
-        return null;
-
-//        return getTargetCurrencySorterByPopularity();
+        return getTargetCurrencySorterByPopularity();
     }
 
-    private List<User> getTargetCurrencySorterByPopularity() {
-        List<Request> enquiries = enquiryRepo.findAll();
-        return enquiries.stream()
-                .map(Request::getUserId)
-                .map(id -> userRepo.findById(id).get())
-                .collect(Collectors.toList());
+    private List<ResponseStatisticCurrencyModel> getTargetCurrencySorterByPopularity() {
+        List<Currency> popular = requestRepo.findPopularCurrencyInRequests();
+        return popular.stream().map(currency -> getResponseStatisticCurrencyModel(currency.getCode(),
+                currency.getDescription())).collect(Collectors.toList());
     }
 
-    private List<User> getUserListWithSpecialAmountOfMoney(BigDecimal amount) {
-        List<Request> enquiries = enquiryRepo.findAll();
-        return enquiries.stream()
-                .filter(enquiry -> enquiry.getMoney().compareTo(amount) >= 0)
-                .map(Request::getUserId)
-                .map(id -> userRepo.findById(id).get())
-                .collect(Collectors.toList());
+    private List<ResponseStatisticUserModel> getUserListWithSpecialAmountOfMoney(Integer param) {
+        List<Long> users = requestRepo.findUsersWithSpecialAmountOfMoneyInRequests(param);
+        return users.stream().map(this::getResponseStatisticUserModel).collect(Collectors.toList());
+    }
+
+    private ResponseStatisticUserModel getResponseStatisticUserModel(long userId){
+        ResponseStatisticUserModel model = new ResponseStatisticUserModel();
+        model.setUserId(userId);
+        return model;
+    }
+
+    private ResponseStatisticCurrencyModel getResponseStatisticCurrencyModel(String code, String description){
+        ResponseStatisticCurrencyModel model = new ResponseStatisticCurrencyModel();
+        model.setCurrency(String.format("%s [ %s ]", code, description));
+        return model;
     }
 
 }
