@@ -4,8 +4,6 @@ import com.example.currencyConverter.model.ConversionRates;
 import com.example.currencyConverter.model.ConverterModel;
 import com.example.currencyConverter.model.ResponseExchangeModel;
 import com.example.currencyConverter.util.Currency;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -21,27 +19,19 @@ public class ExchangeApiService implements ExchangeApiConverter {
     public static final String API_SECRET_KEY = "99a8d9eaa093228e6ef8f601850f322a";
     public static final String APILAYER_BASE_URL = "http://apilayer.net/api/live";
 
-    @Autowired
-    private Environment environment;
-
 
     @Override
-    public ConverterModel getConverterModel() {
-        return new ConverterModel();
-    }
-
     public ResponseExchangeModel getConvertedValue(ConverterModel converterModel){
         Currency sourceCurrency = Currency.USD;
         Currency targetCurrency = converterModel.getTargetCurrency();
         BigDecimal amountOfMoney = converterModel.getUSD();
         Long requestId = converterModel.getRequestId();
 
-        return getConvertedValue(sourceCurrency, targetCurrency, amountOfMoney, requestId);
+        return getConvertedValueFromApi(sourceCurrency, targetCurrency, amountOfMoney, requestId);
     }
 
-    @Override
-    public ResponseExchangeModel getConvertedValue(Currency sourceCurrency, Currency targetCurrency,
-                                                   BigDecimal amountOfMoney, Long requestId) {
+    private ResponseExchangeModel getConvertedValueFromApi(Currency sourceCurrency, Currency targetCurrency,
+                                                           BigDecimal amountOfMoney, Long requestId) {
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseExchangeModel responseExchangeModel = new ResponseExchangeModel();

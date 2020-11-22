@@ -49,4 +49,22 @@ public class ConverterModel {
     public void setRequestId(Long enquiry) {
         this.requestId = enquiry;
     }
+
+
+    public BigDecimal getSrcAmount() {
+        return srcAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "ConverterModel{" +
+                "srcAmount=" + srcAmount +
+                ", targetCurrency=" + targetCurrency +
+                ", userId=" + userId +
+                '}';
+    }
+
+    public void setSrcAmount(BigDecimal srcAmount) {
+        this.srcAmount = srcAmount;
+    }
 }

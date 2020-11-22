@@ -24,22 +24,16 @@ import static com.example.currencyConverter.util.Parameter.HUGE;
 @Service
 public class CurrencyService {
 
+    final static int BIG_NUMBER = 10_000;
+    final static int HUGE_NUMBER = 10_000;
+
     @Autowired
     private UserRepo userRepo;
 
     @Autowired
     private RequestRepo requestRepo;
 
-    public void saveUserIfNotExist(Long userId) {
-        Optional<User> userFromDb = userRepo.findById(userId);
-        if (userFromDb.isEmpty()) {
-            User user = new User();
-            user.setId(userId);
-            userRepo.save(user);
-        }
-    }
-
-    public ConverterModel saveRequest(ConverterModel converterModel) {
+    public ConverterModel completeModel(ConverterModel converterModel) {
         String sourceCurrency = Currency.USD.name();
         String targetCurrency = converterModel.getTargetCurrency().toString();
         BigDecimal amountOfMoney = converterModel.getUSD();
@@ -52,7 +46,20 @@ public class CurrencyService {
         return converterModel;
     }
 
-    public Request saveRequest(String sourceCurrency, String targetCurrency, BigDecimal amountOfMoney, Long userId) {
+    public List<? extends ResponseStatisticModel> getRequestStats(Parameter param) {
+
+        if (param.equals(BIG)) {
+            return getUserListWithSpecialAmountOfMoney(BIG_NUMBER);
+
+        }
+        if (param.equals(HUGE)) {
+            return getUserListWithSpecialAmountOfMoney(HUGE_NUMBER);
+        }
+
+        return getTargetCurrencySorterByPopularity();
+    }
+
+    private Request saveRequest(String sourceCurrency, String targetCurrency, BigDecimal amountOfMoney, Long userId) {
         Request request = new Request();
         request.setMoney(amountOfMoney);
         request.setUserId(userId);
@@ -62,17 +69,13 @@ public class CurrencyService {
         return requestRepo.save(request);
     }
 
-    public List<? extends ResponseStatisticModel> getRequestStats(Parameter param) {
-
-        if (param.equals(BIG)) {
-            return getUserListWithSpecialAmountOfMoney(10_000);
-
+    private void saveUserIfNotExist(Long userId) {
+        Optional<User> userFromDb = userRepo.findById(userId);
+        if (userFromDb.isEmpty()) {
+            User user = new User();
+            user.setId(userId);
+            userRepo.save(user);
         }
-        if (param.equals(HUGE)) {
-            return getUserListWithSpecialAmountOfMoney(100_000);
-        }
-
-        return getTargetCurrencySorterByPopularity();
     }
 
     private List<ResponseStatisticCurrencyModel> getTargetCurrencySorterByPopularity() {

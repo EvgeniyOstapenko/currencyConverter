@@ -23,7 +23,7 @@ public class ExchangeController {
     @PostMapping
     public ResponseEntity<ResponseExchangeModel> convert(@ModelAttribute ConverterModel converterModel) {
 
-        ConverterModel model = currencyService.saveRequest(converterModel);
+        ConverterModel model = currencyService.completeModel(converterModel);
         ResponseExchangeModel responseExchangeModel = exchangeApiService.getConvertedValue(model);
         return new ResponseEntity<>(responseExchangeModel, HttpStatus.OK);
     }
