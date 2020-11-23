@@ -94,7 +94,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>applicationJarFile</finalName>
+		<finalName>currency_converter</finalName>
 	</build>
 
 </project>
