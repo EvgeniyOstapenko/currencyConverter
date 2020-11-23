@@ -48,7 +48,7 @@ public class StatisticControllerTest {
         this.mockMvc.perform(get("/stats").param("param", String.valueOf(Parameter.BIG)))
                 .andDo(print())
         //THEN
-                .andExpect(MockMvcResultMatchers.content().string(containsString("[{\"userId\":4},{\"userId\":3},{\"userId\":2}]")));
+                .andExpect(MockMvcResultMatchers.content().string(containsString("[{\"userId\":2},{\"userId\":3},{\"userId\":4}]")));
 
     }
 
