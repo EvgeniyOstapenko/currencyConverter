@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Component
 public class ExchangeApiService implements ExchangeApiConverter {
 
-    static Logger log = Logger.getLogger(CurrencyConverterApplication.class.getName());
+    static Logger log = Logger.getLogger(ExchangeApiService.class.getName());
 
     public static final String API_SECRET_KEY = "99a8d9eaa093228e6ef8f601850f322a";
     public static final String APILAYER_BASE_URL = "http://apilayer.net/api/live";

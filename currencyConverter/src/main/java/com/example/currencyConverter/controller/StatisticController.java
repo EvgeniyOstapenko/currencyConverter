@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/stats")
 public class StatisticController {
 
-    static Logger log = Logger.getLogger(CurrencyConverterApplication.class.getName());
+    static Logger log = Logger.getLogger(StatisticController.class.getName());
 
     @Autowired
     private CurrencyService currencyService;

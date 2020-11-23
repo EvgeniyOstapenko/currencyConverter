@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/exchange")
 public class ExchangeController {
 
-    static Logger log = Logger.getLogger(CurrencyConverterApplication.class.getName());
+    static Logger log = Logger.getLogger(ExchangeController.class.getName());
 
     @Autowired
     private CurrencyService currencyService;
