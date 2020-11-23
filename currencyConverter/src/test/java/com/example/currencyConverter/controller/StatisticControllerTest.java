@@ -51,7 +51,7 @@ class StatisticControllerTest {
                 .param("param", String.valueOf(Parameter.BIG)))
                 .andDo(print())
 
-                //THEN
+        //THEN
                 .andExpect(status().isOk());
 
         Mockito.verify(currencyService, Mockito.times(1)).getRequestStats(Parameter.BIG);
@@ -65,7 +65,7 @@ class StatisticControllerTest {
                 .param("param", String.valueOf(Parameter.HUGE)))
                 .andDo(print())
 
-                //THEN
+        //THEN
                 .andExpect(status().isOk());
 
         Mockito.verify(currencyService, Mockito.times(1)).getRequestStats(Parameter.HUGE);

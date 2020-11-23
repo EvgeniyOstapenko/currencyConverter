@@ -1,8 +1,10 @@
 package com.example.currencyConverter.service.API;
 
+import com.example.currencyConverter.CurrencyConverterApplication;
 import com.example.currencyConverter.model.ConversionRates;
 import com.example.currencyConverter.model.ResponseExchangeModel;
 import com.example.currencyConverter.util.Currency;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -14,6 +16,8 @@ import java.math.BigDecimal;
 
 @Component
 public class ExchangeApiService implements ExchangeApiConverter {
+
+    static Logger log = Logger.getLogger(CurrencyConverterApplication.class.getName());
 
     public static final String API_SECRET_KEY = "99a8d9eaa093228e6ef8f601850f322a";
     public static final String APILAYER_BASE_URL = "http://apilayer.net/api/live";
@@ -42,6 +46,7 @@ public class ExchangeApiService implements ExchangeApiConverter {
         } else {
             responseExchangeModel.setError(conversionRates.getError());
             responseExchangeModel.setConvertedValue(BigDecimal.ZERO);
+            log.error("Error from apilayer.net api", conversionRates.getError());
         }
 
         responseExchangeModel.setRequestId(requestId);
