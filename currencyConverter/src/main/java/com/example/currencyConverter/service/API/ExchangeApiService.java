@@ -29,28 +29,42 @@ public class ExchangeApiService implements ExchangeApiConverter {
         RestTemplate restTemplate = new RestTemplate();
         ResponseExchangeModel responseExchangeModel = new ResponseExchangeModel();
 
-        MultiValueMap<String, String> uriVariables = new LinkedMultiValueMap<>();
-        uriVariables.add("access_key", API_SECRET_KEY);
-        uriVariables.add("currencies", targetCurrency.getCode());
-        uriVariables.add("source", sourceCurrency.getCode());
-        uriVariables.add("format", "1");
+        MultiValueMap<String, String> uriVariables = getUriVariables(sourceCurrency, targetCurrency);
 
         UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(APILAYER_BASE_URL).queryParams(uriVariables).build();
         ConversionRates conversionRates = restTemplate.getForObject(uriComponents.toUri(), ConversionRates.class);
 
         if (conversionRates.getSuccess()) {
-            String sourceTargetCurrency = sourceCurrency.getCode() + targetCurrency.getCode();
-            String conversionRate = conversionRates.getQuotes().get(sourceTargetCurrency);
-            BigDecimal bdConversionRate = new BigDecimal(conversionRate);
-            responseExchangeModel.setConvertedValue(bdConversionRate.multiply(amountOfMoney));
+            getConvertedValue(sourceCurrency, targetCurrency, amountOfMoney, responseExchangeModel, conversionRates);
         } else {
-            responseExchangeModel.setError(conversionRates.getError());
-            responseExchangeModel.setConvertedValue(BigDecimal.ZERO);
-            log.error("Error from apilayer.net api", conversionRates.getError());
+            getError(responseExchangeModel, conversionRates);
+            log.error("Got an exception from apilayer.net api service", conversionRates.getError());
         }
 
         responseExchangeModel.setRequestId(requestId);
         return responseExchangeModel;
+    }
+
+    private void getError(ResponseExchangeModel responseExchangeModel, ConversionRates conversionRates) {
+        responseExchangeModel.setError(conversionRates.getError());
+        responseExchangeModel.setConvertedValue(BigDecimal.ZERO);
+    }
+
+    private void getConvertedValue(Currency sourceCurrency, Currency targetCurrency, BigDecimal amountOfMoney,
+                                   ResponseExchangeModel responseExchangeModel, ConversionRates conversionRates) {
+        String sourceTargetCurrency = sourceCurrency.getCode() + targetCurrency.getCode();
+        String conversionRate = conversionRates.getQuotes().get(sourceTargetCurrency);
+        BigDecimal bdConversionRate = new BigDecimal(conversionRate);
+        responseExchangeModel.setConvertedValue(bdConversionRate.multiply(amountOfMoney));
+    }
+
+    private MultiValueMap<String, String> getUriVariables(Currency sourceCurrency, Currency targetCurrency) {
+        MultiValueMap<String, String> uriVariables = new LinkedMultiValueMap<>();
+        uriVariables.add("access_key", API_SECRET_KEY);
+        uriVariables.add("currencies", targetCurrency.getCode());
+        uriVariables.add("source", sourceCurrency.getCode());
+        uriVariables.add("format", "1");
+        return uriVariables;
     }
 
 }
