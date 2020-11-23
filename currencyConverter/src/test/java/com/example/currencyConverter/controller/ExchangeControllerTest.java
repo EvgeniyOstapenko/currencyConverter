@@ -4,7 +4,6 @@ package com.example.currencyConverter.controller;
 import com.example.currencyConverter.model.ConverterModel;
 import com.example.currencyConverter.model.ResponseExchangeModel;
 import com.example.currencyConverter.service.CurrencyService;
-import com.example.currencyConverter.service.ExchangeApiService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -26,9 +25,6 @@ public class ExchangeControllerTest {
     @MockBean
     private CurrencyService currencyService;
 
-    @MockBean
-    private ExchangeApiService exchangeApiService;
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -41,7 +37,7 @@ public class ExchangeControllerTest {
 
         //WHEN
         when((currencyService).completeModel(model)).thenReturn(model);
-        when((exchangeApiService).getConvertedValue(model)).thenReturn(response);
+        when((currencyService).getConvertedValue(model)).thenReturn(response);
 
         mockMvc.perform(post("/exchange")
                 .flashAttr("converterModel", model))
@@ -51,7 +47,6 @@ public class ExchangeControllerTest {
                 .andExpect(status().isOk());
 
         Mockito.verify(currencyService, Mockito.times(1)).completeModel(model);
-        Mockito.verify(exchangeApiService, Mockito.times(1)).getConvertedValue(model);
 
     }
 

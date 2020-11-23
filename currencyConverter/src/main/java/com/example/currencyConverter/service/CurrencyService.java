@@ -2,12 +2,10 @@ package com.example.currencyConverter.service;
 
 import com.example.currencyConverter.domain.Request;
 import com.example.currencyConverter.domain.User;
-import com.example.currencyConverter.model.ConverterModel;
-import com.example.currencyConverter.model.ResponseStatisticCurrencyModel;
-import com.example.currencyConverter.model.ResponseStatisticModel;
-import com.example.currencyConverter.model.ResponseStatisticUserModel;
+import com.example.currencyConverter.model.*;
 import com.example.currencyConverter.repos.RequestRepo;
 import com.example.currencyConverter.repos.UserRepo;
+import com.example.currencyConverter.service.API.ExchangeApiService;
 import com.example.currencyConverter.util.Currency;
 import com.example.currencyConverter.util.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +23,16 @@ import static com.example.currencyConverter.util.Parameter.HUGE;
 public class CurrencyService {
 
     final static int BIG_NUMBER = 10_000;
-    final static int HUGE_NUMBER = 10_000;
+    final static int HUGE_NUMBER = 100_000;
 
     @Autowired
     private UserRepo userRepo;
 
     @Autowired
     private RequestRepo requestRepo;
+
+    @Autowired
+    private ExchangeApiService exchangeApiService;
 
     public ConverterModel completeModel(ConverterModel converterModel) {
         String sourceCurrency = Currency.USD.name();
@@ -57,6 +58,15 @@ public class CurrencyService {
         }
 
         return getTargetCurrencySorterByPopularity();
+    }
+
+    public ResponseExchangeModel getConvertedValue(ConverterModel converterModel){
+        Currency sourceCurrency = Currency.USD;
+        Currency targetCurrency = converterModel.getTargetCurrency();
+        BigDecimal amountOfMoney = converterModel.getUSD();
+        Long requestId = converterModel.getRequestId();
+
+        return exchangeApiService.getConvertedValueFromApi(sourceCurrency, targetCurrency, amountOfMoney, requestId);
     }
 
     private Request saveRequest(String sourceCurrency, String targetCurrency, BigDecimal amountOfMoney, Long userId) {

@@ -50,11 +50,6 @@ public class ConverterModel {
         this.requestId = enquiry;
     }
 
-
-    public BigDecimal getSrcAmount() {
-        return srcAmount;
-    }
-
     @Override
     public String toString() {
         return "ConverterModel{" +
