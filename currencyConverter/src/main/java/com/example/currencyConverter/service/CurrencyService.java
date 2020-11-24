@@ -34,14 +34,12 @@ public class CurrencyService {
     @Autowired
     private ExchangeApiService exchangeApiService;
 
-    public ConverterModel completeModel(ConverterModel converterModel) {
-        String sourceCurrency = Currency.USD.name();
-        String targetCurrency = converterModel.getTargetCurrency().toString();
-        BigDecimal amountOfMoney = converterModel.getUSD();
-        Long userId = converterModel.getUserId();
-
-        saveUserIfNotExist(converterModel.getUserId());
-        Request request = saveRequest(sourceCurrency, targetCurrency, amountOfMoney, userId);
+    public ConverterModel getModel(BigDecimal amountOfMoney,
+                                   Currency targetCurrency,
+                                   Long userId) {
+        ConverterModel converterModel = new ConverterModel();
+        saveUserIfNotExist(userId);
+        Request request = saveRequest(Currency.USD.name(), targetCurrency.name(), amountOfMoney, userId);
 
         converterModel.setRequestId(request.getId());
         return converterModel;

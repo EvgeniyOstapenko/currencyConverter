@@ -1,4 +1,4 @@
-FROM openjdk:8
-ADD target/applicationJarFile.jar applicationJarFile.jar
+FROM openjdk:15
+ADD target/currency_converter.jar currency_converter.jar
 EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "docker-spring-boot.jar"]
+ENTRYPOINT ["java", "-jar", "currency_converter.jar"]

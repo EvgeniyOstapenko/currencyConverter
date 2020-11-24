@@ -12,8 +12,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
@@ -40,10 +38,7 @@ class CurrencyServiceTest {
     void completeModel() {
 
         //GIVEN
-        ConverterModel modelBefore = new ConverterModel();
-        modelBefore.setUserId(1l);
-        modelBefore.setSrcAmount(new BigDecimal(1000));
-        modelBefore.setTargetCurrency(Currency.AED);
+        BigDecimal srcAmount = new BigDecimal(1000);
 
         ConverterModel modelAfter = new ConverterModel();
         modelAfter.setRequestId(1L);
@@ -55,7 +50,7 @@ class CurrencyServiceTest {
         when((requestRepo).save(any())).thenReturn(request);
 
         //THEN
-        ConverterModel completedModel = currencyService.completeModel(modelBefore);
+        ConverterModel completedModel = currencyService.getModel(srcAmount, Currency.AED, 1L);
 
         assertThat(completedModel.getRequestId())
                 .isNotNull()

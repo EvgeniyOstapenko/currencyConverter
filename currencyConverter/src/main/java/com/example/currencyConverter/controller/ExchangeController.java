@@ -1,14 +1,16 @@
 package com.example.currencyConverter.controller;
 
-import com.example.currencyConverter.CurrencyConverterApplication;
 import com.example.currencyConverter.model.ConverterModel;
 import com.example.currencyConverter.model.ResponseExchangeModel;
 import com.example.currencyConverter.service.CurrencyService;
+import com.example.currencyConverter.util.Currency;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 
 @RestController
@@ -21,12 +23,14 @@ public class ExchangeController {
     private CurrencyService currencyService;
 
     @PostMapping
-    public ResponseEntity<ResponseExchangeModel> convert(@ModelAttribute ConverterModel converterModel) {
+    public ResponseEntity<ResponseExchangeModel> convert(BigDecimal srcAmount,
+                                                         Currency targetCurrency,
+                                                         Long userId) {
         log.info("ExchangeController working..");
 
-        ConverterModel model = currencyService.completeModel(converterModel);
-        ResponseExchangeModel responseExchangeModel = currencyService.getConvertedValue(model);
-        return new ResponseEntity<>(responseExchangeModel, HttpStatus.OK);
+        ConverterModel model = currencyService.getModel(srcAmount, targetCurrency, userId);
+        ResponseExchangeModel response = currencyService.getConvertedValue(model);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
